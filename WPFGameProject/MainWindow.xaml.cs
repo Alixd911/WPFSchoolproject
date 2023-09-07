@@ -15,10 +15,13 @@ namespace WPFGameProject
         private bool isPartyModeActive = false;
         private DispatcherTimer partyTimer;
         private Random random = new Random();
+        private double AnimationDuration = 5;
+        private bool IsFastSpeed = false;
         public MainWindow()
         { 
             InitializeComponent();
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //center application in middle of screen when starting up
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void CbxGridImagesSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -27,7 +30,7 @@ namespace WPFGameProject
             {
                 ComboBoxItem comboxItemImage = (ComboBoxItem)Currentitem.SelectedItem;
                 string ComboBoxItem = comboxItemImage.Name;
-                switch (ComboBoxItem)
+                switch (ComboBoxItem) // check on which character is chosen
                 {
                     case "TheRock":
                         PakMeDan.Source = new BitmapImage(new Uri("/Assets/Therock.jpg", UriKind.Relative));
@@ -50,6 +53,7 @@ namespace WPFGameProject
             if (StartStopBTN.Content.ToString() == "START!")
             {
                 StartStopBTN.Content = "STOP!";
+
             }
             else
             {
@@ -59,7 +63,7 @@ namespace WPFGameProject
 
         private void PartyMode(object sender, RoutedEventArgs e)
         {
-            if (!isPartyModeActive)
+            if (!isPartyModeActive) // check if party mode is active or not
             {
                 isPartyModeActive = true;
                 StartPartyMode();
@@ -76,14 +80,18 @@ namespace WPFGameProject
         private void StartPartyMode()
         {
             partyTimer = new DispatcherTimer();
-            partyTimer.Interval = TimeSpan.FromMilliseconds(0);
+            partyTimer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
             partyTimer.Tick += PartyTimer_Tick;
             partyTimer.Start();
+            // disabled de resize mode buttons dat je niet naar fullscreen kan gaan en kan geen minimalize
             ResizeMode = ResizeMode.NoResize;
+            //zet de window state naar normal zodat je niet kan cheaten dat je met fullscreen geen party mode hebt
+            WindowState= WindowState.Normal;
+
         }
         private void StopPartyMode()
         {
-            if (partyTimer != null)
+            if (partyTimer != null) 
             {
                 partyTimer.Stop();
                 partyTimer = null;
@@ -105,23 +113,37 @@ namespace WPFGameProject
             newHeight = Math.Min(newHeight, MaxHeight);
 
             var bounceWidthAnimation = new DoubleAnimation();
-            bounceWidthAnimation.From = this.Width;
             bounceWidthAnimation.To = newWidth;
-            bounceWidthAnimation.Duration = TimeSpan.FromSeconds(0.1); 
+            bounceWidthAnimation.Duration = TimeSpan.FromMilliseconds(AnimationDuration); 
 
             var bounceHeightAnimation = new DoubleAnimation();
-            bounceHeightAnimation.From = this.Height;
             bounceHeightAnimation.To = newHeight;
-            bounceHeightAnimation.Duration = TimeSpan.FromSeconds(0.1); 
+            bounceHeightAnimation.Duration = TimeSpan.FromMilliseconds(AnimationDuration); 
 
-            var storyboard = new Storyboard();
-            storyboard.Children.Add(bounceWidthAnimation);
-            storyboard.Children.Add(bounceHeightAnimation);
-            Storyboard.SetTarget(bounceWidthAnimation, this);
-            Storyboard.SetTargetProperty(bounceWidthAnimation, new PropertyPath(Window.WidthProperty));
-            Storyboard.SetTarget(bounceHeightAnimation, this);
-            Storyboard.SetTargetProperty(bounceHeightAnimation, new PropertyPath(Window.HeightProperty));
-            storyboard.Begin();
+            BeginAnimation(Window.WidthProperty, bounceWidthAnimation);
+            BeginAnimation(Window.HeightProperty, bounceHeightAnimation);
+        }
+
+        private void SpeedHandlerValue(object sender, EventArgs e)
+        {
+            if (isPartyModeActive) {
+            if(IsFastSpeed)
+            {
+                AnimationDuration = 1;
+                SpeedHandler.Content = "Slower";
+            }
+            else
+            {
+                AnimationDuration = 100;
+                SpeedHandler.Content = "Faster";
+            }
+            IsFastSpeed = !IsFastSpeed;
+            partyTimer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
+
+            } else
+            {
+                MessageBox.Show("An error occured");
+            }
         }
     }
 }

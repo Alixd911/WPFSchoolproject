@@ -19,7 +19,7 @@
             <Button x:Name="StartStopBTN" Width="auto" Height="auto" FontFamily="Comic Sans MS" FontWeight="Bold" FontSize="30" Background="Black" Foreground="White" Margin="10" Content="START!" Click="StartStopGame"></Button>
         </StackPanel>
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
-            <Button Height="30" Width="150" FontWeight="Bold" Margin="20" Content="Faster"/>
+            <Button x:Name="SpeedHandler" Height="30" Width="150" FontWeight="Bold" Margin="20" Click="SpeedHandlerValue" Content="Faster"/>
             <Button x:Name="partytime" Height="30" Width="150" FontWeight="Bold" Background="MediumPurple" Foreground="DarkRed" Content="PARTY MODE OFF" Click="PartyMode"></Button>
             <ComboBox  x:Name="Currentitem" SelectedIndex="0" VerticalAlignment="bottom" Width="200" Height="30" Margin="20" SelectionChanged="CbxGridImagesSelectionChanged">
                 <ComboBoxItem Name="TheRock" FontWeight="Bold">The rock</ComboBoxItem>
