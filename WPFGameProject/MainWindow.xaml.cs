@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -14,9 +15,10 @@ namespace WPFGameProject
     public partial class MainWindow : Window
     {
         private bool isPartyModeActive = false;
-        private DispatcherTimer partyTimer;
+        private bool isGameMode = false;
+        private DispatcherTimer Timer;
         private Random random = new Random();
-        private double AnimationDuration = 5;
+        private double AnimationDuration = 1;
         private bool IsFastSpeed = false;
         public MainWindow()
         { 
@@ -51,13 +53,16 @@ namespace WPFGameProject
         }
         private void StartStopGame()
         {
-            if (StartStopBTN.Content.ToString() == "START!")
+            if (!isGameMode) // check if party mode is active or not
             {
+                isGameMode = true;
+                StartGameMode();
                 StartStopBTN.Content = "STOP!";
-
             }
             else
             {
+                isGameMode = false;
+                StopGameMode();
                 StartStopBTN.Content = "START!";
             }
         }
@@ -107,10 +112,10 @@ namespace WPFGameProject
 
         private void StartPartyMode()
         {
-            partyTimer = new DispatcherTimer();
-            partyTimer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
-            partyTimer.Tick += PartyTimer_Tick;
-            partyTimer.Start();
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
+            Timer.Tick += PartyTimer_Tick;
+            Timer.Start();
             // disabled de resize mode buttons dat je niet naar fullscreen kan gaan en kan geen minimalize
             ResizeMode = ResizeMode.NoResize;
             //zet de window state naar normal zodat je niet kan cheaten dat je met fullscreen geen party mode hebt
@@ -119,10 +124,10 @@ namespace WPFGameProject
         }
         private void StopPartyMode()
         {
-            if (partyTimer != null) 
+            if (Timer != null) 
             {
-                partyTimer.Stop();
-                partyTimer = null;
+                Timer.Stop();
+                Timer = null;
                 ResizeMode = ResizeMode.CanResize;
             }
         }
@@ -152,21 +157,62 @@ namespace WPFGameProject
             BeginAnimation(Window.HeightProperty, bounceHeightAnimation);
         }
 
+        private void StartGameMode()
+        {
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromMilliseconds(1);
+            Timer.Tick += StartGameTick;
+            Timer.Start();
+
+        }
+        private void StopGameMode()
+        {
+            if (Timer != null)
+            {
+                Timer.Stop();
+                Timer = null;
+            }
+        }
+        private void StartGameTick(object sender, EventArgs e)
+        {
+            double MaxWidth = CbxGridImages.MaxWidth;
+            double MaxHeight = CbxGridImages.MaxHeight;
+
+            double PositionWidthChange = (random.NextDouble() * 100);
+            double PositionheightChange = (random.NextDouble() * 100);
+
+            double newWidth = Math.Max(Width + PositionWidthChange, 100);
+            double newHeight = Math.Max(Height + PositionheightChange, 100);
+
+            newWidth = Math.Min(newWidth, MaxWidth);
+            newHeight = Math.Min(newHeight, MaxHeight);
+            var BounceImageAnimationTop = new DoubleAnimation();
+            BounceImageAnimationTop.To = newHeight;
+            BounceImageAnimationTop.Duration = TimeSpan.FromMilliseconds(AnimationDuration);
+
+            var BounceImageAnimationLeft = new DoubleAnimation();
+            BounceImageAnimationLeft.To = newWidth;
+            BounceImageAnimationLeft.Duration = TimeSpan.FromMilliseconds(AnimationDuration);
+
+            PakMeDan.BeginAnimation(Canvas.HeightProperty, BounceImageAnimationTop);
+            PakMeDan.BeginAnimation(Canvas.WidthProperty, BounceImageAnimationLeft);
+        }
+
         private void SpeedHandlerValue()
         {
             if (isPartyModeActive) {
-            if(IsFastSpeed)
+            if(!IsFastSpeed)
             {
                 AnimationDuration = 1;
-                SpeedHandler.Content = "Slower";
+                SpeedHandler.Content = "Faster";
             }
             else
             {
                 AnimationDuration = 100;
-                SpeedHandler.Content = "Faster";
+                SpeedHandler.Content = "Slower";
             }
             IsFastSpeed = !IsFastSpeed;
-            partyTimer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
+            Timer.Interval = TimeSpan.FromMilliseconds(AnimationDuration);
 
             } else
             {
