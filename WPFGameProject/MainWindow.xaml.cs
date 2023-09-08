@@ -1,6 +1,7 @@
-﻿using System;
+﻿    using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -48,7 +49,7 @@ namespace WPFGameProject
             }
 
         }
-        private void StartStopGame(object sender, RoutedEventArgs e)
+        private void StartStopGame()
         {
             if (StartStopBTN.Content.ToString() == "START!")
             {
@@ -61,7 +62,34 @@ namespace WPFGameProject
             }
         }
 
-        private void PartyMode(object sender, RoutedEventArgs e)
+        private void KeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                PartyMode();
+            }
+            else if (e.Key == Key.End)
+            {
+                SpeedHandlerValue(); 
+            }
+            else if (e.Key == Key.Space)
+            {
+                StartStopGame();
+            }
+        }
+        private void StartStopClick(object sender, RoutedEventArgs e)
+        {
+            StartStopGame();
+        }
+        private void partytime_Click(object sender, RoutedEventArgs e)
+        {
+            PartyMode();
+        }
+        private void SpeedHandlerClick(object sender, RoutedEventArgs e)
+        {
+            SpeedHandlerValue();
+        }
+        private void PartyMode()
         {
             if (!isPartyModeActive) // check if party mode is active or not
             {
@@ -124,7 +152,7 @@ namespace WPFGameProject
             BeginAnimation(Window.HeightProperty, bounceHeightAnimation);
         }
 
-        private void SpeedHandlerValue(object sender, EventArgs e)
+        private void SpeedHandlerValue()
         {
             if (isPartyModeActive) {
             if(IsFastSpeed)

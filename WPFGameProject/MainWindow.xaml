@@ -5,22 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFGameProject"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="450" MinWidth="800" x:Name="Defaultwindow">
+        Title="MainWindow" MinHeight="450" MinWidth="800" x:Name="Defaultwindow"
+        KeyDown="KeyDownHandler">
     <Grid Background="DarkBlue">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid x:Name="CbxGridImages" Grid.Column="1" Background="Yellow" Margin="0, 20, 20, 20" Height="auto">
-            <Image x:Name="PakMeDan" Height="100" HorizontalAlignment="left" VerticalAlignment="Top" ></Image>
+            <Image x:Name="PakMeDan" Source="/Assets/Ricoverhoeven.jpg" Height="100" HorizontalAlignment="left" VerticalAlignment="Top" ></Image>
         </Grid>
+        <Button Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Content="ℹ️">
+            <Button.ToolTip>
+                <ToolTip Background="DimGray" Foreground="white" FontWeight="Bold">
+                    <TextBlock>
+                       [SHIFT] = Go faster/slower!
+                        <LineBreak />
+                       [LEFTALT] = Start/Stop party mode!
+                        <LineBreak/>
+                        [ENTER] = Start/Stop the game!
+                    </TextBlock>
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
         <StackPanel VerticalAlignment="top" HorizontalAlignment="Center">
             <TextBlock Height="auto" Width="auto" FontSize="70" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White">0</TextBlock>
-            <Button x:Name="StartStopBTN" Width="auto" Height="auto" FontFamily="Comic Sans MS" FontWeight="Bold" FontSize="30" Background="Black" Foreground="White" Margin="10" Content="START!" Click="StartStopGame"></Button>
+            <Button x:Name="StartStopBTN" Width="auto" Height="auto" FontFamily="Comic Sans MS" FontWeight="Bold" FontSize="30" Background="Black" Foreground="White" Margin="10" Content="START!" Click="StartStopClick"></Button>
         </StackPanel>
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
-            <Button x:Name="SpeedHandler" Height="30" Width="150" FontWeight="Bold" Margin="20" Click="SpeedHandlerValue" Content="Faster"/>
-            <Button x:Name="partytime" Height="30" Width="150" FontWeight="Bold" Background="MediumPurple" Foreground="DarkRed" Content="PARTY MODE OFF" Click="PartyMode"></Button>
+            <Button x:Name="SpeedHandler" Height="30" Width="150" FontWeight="Bold" Margin="20" Click="SpeedHandlerClick" Content="Faster"/>
+            <Button x:Name="partytime" Height="30" Width="150" FontWeight="Bold" Background="MediumPurple" Foreground="DarkRed" Content="PARTY MODE OFF" Click="partytime_Click"></Button>
             <ComboBox  x:Name="Currentitem" SelectedIndex="0" VerticalAlignment="bottom" Width="200" Height="30" Margin="20" SelectionChanged="CbxGridImagesSelectionChanged">
                 <ComboBoxItem Name="TheRock" FontWeight="Bold">The rock</ComboBoxItem>
                 <ComboBoxItem Name="RicoVerhoeven"  FontWeight="Bold">Rico Verhoeven</ComboBoxItem>
