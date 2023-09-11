@@ -20,6 +20,12 @@ namespace WPFGameProject
         private Random random = new Random();
         private double AnimationDuration = 1;
         private bool IsFastSpeed = false;
+        private double xPosition = 0; 
+        private double yPosition = 0;
+        private double xSpeed = 0.1;   
+        private double ySpeed = 0.1;
+        private double Counter = 0;
+
         public MainWindow()
         { 
             InitializeComponent();
@@ -160,42 +166,46 @@ namespace WPFGameProject
         private void StartGameMode()
         {
             Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromMilliseconds(1);
             Timer.Tick += StartGameTick;
             Timer.Start();
 
         }
         private void StopGameMode()
         {
-            if (Timer != null)
+            if (isGameMode == true)
             {
+                Counter = 0;
+                BorderCounter.Text = Counter.ToString("0");
                 Timer.Stop();
                 Timer = null;
+                isGameMode = false;
+            }else
+            {
+                return;
             }
+
         }
         private void StartGameTick(object sender, EventArgs e)
         {
-            double MaxWidth = CbxGridImages.MaxWidth;
-            double MaxHeight = CbxGridImages.MaxHeight;
+            double MaxWidth = CbxGridImages.ActualWidth - PakMeDan.ActualWidth;
+            double MaxHeight = CbxGridImages.ActualHeight - PakMeDan.ActualHeight;
 
-            double PositionWidthChange = (random.NextDouble() * 100);
-            double PositionheightChange = (random.NextDouble() * 100);
+            xPosition += xSpeed;
+            yPosition += ySpeed;
+            if (xPosition < 0 || xPosition > MaxWidth)
+            {
+                xSpeed *= -1;
+                Counter++;
+            }
 
-            double newWidth = Math.Max(Width + PositionWidthChange, 100);
-            double newHeight = Math.Max(Height + PositionheightChange, 100);
+            if (yPosition < 0 || yPosition > MaxHeight)
+            {
+                ySpeed *= -1;
+                Counter++;
+            }
 
-            newWidth = Math.Min(newWidth, MaxWidth);
-            newHeight = Math.Min(newHeight, MaxHeight);
-            var BounceImageAnimationTop = new DoubleAnimation();
-            BounceImageAnimationTop.To = newHeight;
-            BounceImageAnimationTop.Duration = TimeSpan.FromMilliseconds(AnimationDuration);
-
-            var BounceImageAnimationLeft = new DoubleAnimation();
-            BounceImageAnimationLeft.To = newWidth;
-            BounceImageAnimationLeft.Duration = TimeSpan.FromMilliseconds(AnimationDuration);
-
-            PakMeDan.BeginAnimation(Canvas.HeightProperty, BounceImageAnimationTop);
-            PakMeDan.BeginAnimation(Canvas.WidthProperty, BounceImageAnimationLeft);
+            PakMeDan.Margin = new Thickness(xPosition, yPosition, 0, 0);
+            BorderCounter.Text = Counter.ToString();
         }
 
         private void SpeedHandlerValue()
@@ -217,6 +227,21 @@ namespace WPFGameProject
             } else
             {
                 MessageBox.Show("An error occured");
+            }
+        }
+
+        private void JeHebtMeGepakt(object sender, MouseEventArgs e)
+        {
+            if (isGameMode == true) {
+            MessageBox.Show($"Je hebt er {Counter} over gedaan");
+            Counter = 0;
+            BorderCounter.Text = Counter.ToString("0");
+            Timer.Stop();
+            Timer = null;
+            isGameMode = false;
+            } else
+            {
+                return;
             }
         }
     }
